@@ -1,0 +1,76 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+typedef struct vertice
+{
+	char nome[10];
+} vertice;
+
+typedef struct aresta
+{
+	vertice *v1;
+	vertice *v2;
+	int valor;
+} aresta;
+
+int indice_vertice(int num_vertives, vertice *vertices, char *nome)
+{   
+    int i, r;
+
+    for (i = 0; i < num_vertives; ++i)
+    {
+        if (strcmp(vertices[i].nome, nome) == 0)
+        {
+            r = i;
+        }
+    }
+
+    return r;
+}
+
+int main()
+{
+	int numero_vertices, i, numero_arestas;
+    vertice *vertices;
+    aresta *arestas;
+    FILE *arq;
+    char nv1[20], nv2[20];
+    int vv;
+
+    arq = fopen("entrada.txt", "r");
+
+    if(arq == NULL){
+        printf("Erro ao abrir o arquivo!\n");
+        exit(1);
+    }
+
+    fscanf(arq,"%i",&numero_vertices);
+    
+    vertices = (vertice *)malloc(numero_vertices * sizeof(vertice));
+    for (i = 0; i < numero_vertices; ++i)
+    {
+    	fscanf(arq,"%s", vertices[i].nome);
+    }
+
+    fscanf(arq,"%i",&numero_arestas);
+
+    arestas = (aresta *)malloc(numero_arestas * sizeof(aresta));
+    for (i = 0; i < numero_arestas; ++i)
+    {
+        fscanf(arq,"%s %s %i", nv1, nv2, &vv);
+
+        arestas[i].v1 = &vertices[indice_vertice(numero_vertices, vertices, nv1)];
+        arestas[i].v2 = &vertices[indice_vertice(numero_vertices, vertices, nv2)];
+        arestas[i].valor = vv;
+    }
+
+    for (i = 0; i < numero_arestas; ++i)
+    {
+        printf("%s\t%s\t%i \n", arestas[i].v1->nome, arestas[i].v2->nome, arestas[i].valor);
+    }
+
+    printf("\n");
+
+	return 0;
+}
